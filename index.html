@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2E7D32">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>سورۃ یٰسین</title>
+  
+  <link rel="manifest" href="data:application/json,%7B%22name%22%3A%22%D8%B3%D9%88%D8%B1%DB%83%20%DB%8C%D9%B0%D8%B3%DB%8C%D9%86%22%2C%22short_name%22%3A%22%DB%8C%D9%B0%D8%B3%DB%8C%D9%86%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f4f7f6%22%2C%22theme_color%22%3A%22%232E7D32%22%7D">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --primary: #2E7D32;
+      --primary-dark: #1B5E20;
+      --secondary: #1565C0;
+      --accent: #D84315;
+      --highlight: #FFFDE7;
+      --player-bg: #1B5E20;
+      --gold: #C9A227;
+      --tafseer-bg: #E3F2FD;
+      --header-height: 110px;
+      --shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --highlight: #2d2d1a;
+      --tafseer-bg: #1a2733;
+      --shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Nastaliq Urdu', 'Amiri', serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding-bottom: 100px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* ========== HEADER ========== */
+    .fixed-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: linear-gradient(135deg, #1b5e20 0%, #2E7D32 50%, #43A047 100%);
+      color: white;
+      padding: 8px 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .surah-title {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Amiri', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .burger-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 38px; height: 38px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      z-index: 10;
+    }
+    .burger-btn:hover { background: rgba(255,255,255,0.35); }
+
+    .header-placeholder { width: 38px; }
+
+    .controls-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .qari-select {
+      padding: 5px 10px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.15);
+      color: white;
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 0.75rem;
+    }
+    .qari-select option { color: #333; background: white; }
+
+    .toggle-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+    }
+    .switch { position: relative; display: inline-block; width: 28px; height: 15px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255,255,255,0.3); transition: .3s; border-radius: 15px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 11px; width: 11px; left: 2px; bottom: 2px;
+      background-color: white; transition: .3s; border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #81C784; }
+    input:checked + .slider:before { transform: translateX(13px); }
+
+    .play-full-btn {
+      padding: 5px 12px;
+      border-radius: 15px;
+      border: 1px solid rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-family: 'Noto Nastaliq Urdu', serif;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .play-full-btn:hover { background: rgba(255,255,255,0.35); }
+
+    /* ========== SIDE MENU ========== */
+    .menu-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1500;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+    }
+    .menu-overlay.show { opacity: 1; visibility: visible; }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -280px;
+      width: 270px;
+      height: 100%;
+      background: var(--card-bg);
+      z-index: 1600;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -5px 0 25px rgba(0,0,0,0.3);
+    }
+    .side-menu.show { right: 0; }
+
+    .menu-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      padding: 20px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .menu-header h3 { font-size: 1.1rem; }
+    .menu-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .menu-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-bottom: 1px solid var(--highlight);
+    }
+    .menu-item:hover { background: var(--highlight); }
+    .menu-item-icon { font-size: 1.3rem; }
+    .menu-item-text { font-size: 0.95rem; font-weight: 500; }
+    .menu-item-toggle { margin-right: auto; }
+
+    /* ========== MAIN CONTENT ========== */
+    .main-content {
+      margin-top: calc(var(--header-height) + 10px);
+      padding: 10px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .bismillah-container {
+      background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+      border: 3px solid var(--gold);
+      border-radius: 15px;
+      padding: 15px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    [data-theme="dark"] .bismillah-container {
+      background: linear-gradient(135deg, #3d3520 0%, #4a4025 100%);
+    }
+    .bismillah-text {
+      font-family: 'Amiri', serif;
+      font-size: 1.8rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    [data-theme="dark"] .bismillah-text { color: #81C784; }
+    .bismillah-translation {
+      font-size: 0.95rem;
+      color: #5D4037;
+      margin-top: 6px;
+    }
+    [data-theme="dark"] .bismillah-translation { color: #BCAAA4; }
+    .bismillah-translation.hidden { display: none; }
+
+    .verse {
+      background: var(--card-bg);
+      margin-bottom: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      border-right: 4px solid var(--primary);
+      box-shadow: var(--shadow);
+    }
+    .verse.bookmarked { border-right-color: #FFD54F; }
+
+    .verse-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .verse-num {
+      background: #e8f5e9;
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    [data-theme="dark"] .verse-num { background: #1b3d1f; color: #81C784; }
+
+    .verse-actions { display: flex; gap: 6px; }
+
+    .action-btn {
+      background: #f5f5f5;
+      border: none;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--primary);
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    [data-theme="dark"] .action-btn { background: #2d2d2d; color: #81C784; }
+    .action-btn:hover { transform: scale(1.1); }
+    .action-btn.active { background: #ffebee; color: #d32f2f; }
+    .action-btn.bookmarked { background: #FFD54F; color: #333; }
+
+    .arabic {
+      text-align: right;
+      font-family: 'Amiri', serif;
+      font-size: 1.7rem;
+      color: var(--secondary);
+      line-height: 2.2;
+      margin-bottom: 8px;
+    }
+    [data-theme="dark"] .arabic { color: #64B5F6; }
+
+    .urdu {
+      text-align: right;
+      font-size: 1rem;
+      color: var(--accent);
+      background: var(--highlight);
+      padding: 8px 10px;
+      border-radius: 8px;
+      line-height: 1.8;
+      border-right: 3px solid #FFB300;
+    }
+    [data-theme="dark"] .urdu { color: #FF8A65; }
+    .urdu.hidden { display: none; }
+
+    .tafseer {
+      margin-top: 8px;
+      padding: 10px;
+      background: var(--tafseer-bg);
+      border-radius: 8px;
+      border-right: 3px solid var(--secondary);
+      display: none;
+    }
+    .tafseer.show { display: block; }
+    .tafseer-label {
+      font-size: 0.75rem;
+      color: var(--secondary);
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    [data-theme="dark"] .tafseer-label { color: #64B5F6; }
+    .tafseer-text {
+      font-size: 0.9rem;
+      color: var(--secondary);
+      line-height: 1.8;
+    }
+    [data-theme="dark"] .tafseer-text { color: #90CAF9; }
+
+    /* ========== BOTTOM PLAYER ========== */
+    #bottomPlayer {
+      position: fixed;
+      bottom: -120px;
+      left: 0; right: 0;
+      background: var(--player-bg);
+      color: white;
+      padding: 10px 15px;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+      transition: bottom 0.4s ease;
+      z-index: 1000;
+    }
+    #bottomPlayer.show { bottom: 0; }
+
+    .player-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .player-title { font-weight: bold; font-size: 0.9rem; }
+    .player-subtitle { font-size: 0.7rem; opacity: 0.8; }
+    .close-player {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.75rem;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      height: 5px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      height: 14px; width: 14px;
+      border-radius: 50%;
+      background: #fff;
+      -webkit-appearance: none;
+      margin-top: -5px;
+    }
+
+    /* ========== MODALS ========== */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 15px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      padding: 15px;
+      border-radius: 15px 15px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+    }
+    .modal-title { font-size: 1.1rem; font-weight: bold; }
+    .modal-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .modal-body { padding: 15px; }
+    .modal-section { margin-bottom: 20px; }
+    .modal-section-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+      border-bottom: 2px solid var(--primary);
+    }
+    [data-theme="dark"] .modal-section-title { color: #81C784; border-color: #81C784; }
+
+    .dua-box {
+      background: var(--highlight);
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border-right: 3px solid var(--gold);
+    }
+    .dua-arabic {
+      font-family: 'Amiri', serif;
+      font-size: 1.3rem;
+      color: var(--secondary);
+      text-align: center;
+      margin-bottom: 8px;
+      line-height: 1.8;
+    }
+    [data-theme="dark"] .dua-arabic { color: #64B5F6; }
+    .dua-urdu {
+      font-size: 0.9rem;
+      color: var(--accent);
+      text-align: center;
+    }
+    [data-theme="dark"] .dua-urdu { color: #FF8A65; }
+
+    .fazilat-text { font-size: 0.95rem; line-height: 1.9; }
+    .fazilat-text p { margin-bottom: 10px; }
+
+    .time-list { list-style: none; }
+    .time-list li {
+      padding: 8px 10px;
+      background: var(--highlight);
+      margin-bottom: 6px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .reminder-setting {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: var(--highlight);
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .reminder-time-input {
+      padding: 8px 12px;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--card-bg);
+      color: var(--text-color);
+    }
+    .reminder-btn {
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Noto Nastaliq Urdu', serif;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    /* ========== BOOKMARKS PANEL ========== */
+    .bookmarks-list { padding: 10px; }
+    .bookmark-item {
+      background: var(--highlight);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    .bookmark-item:hover { transform: translateX(-5px); }
+    .bookmark-item-num {
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    [data-theme="dark"] .bookmark-item-num { color: #81C784; }
+    .bookmark-item-text {
+      font-family: 'Amiri', serif;
+      font-size: 1rem;
+      color: var(--secondary);
+    }
+    [data-theme="dark"] .bookmark-item-text { color: #64B5F6; }
+    .no-bookmarks {
+      text-align: center;
+      padding: 30px;
+      color: #999;
+    }
+
+    /* ========== TOAST ========== */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #333;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      z-index: 3000;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .offline-indicator {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #f44336;
+      color: white;
+      text-align: center;
+      padding: 8px;
+      font-size: 0.8rem;
+      z-index: 3000;
+      display: none;
+    }
+    .offline-indicator.show { display: block; }
+
+    @media (max-width: 500px) {
+      :root { --header-height: 100px; }
+      .surah-title { font-size: 1.6rem; }
+      .bismillah-text { font-size: 1.5rem; }
+      .arabic { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="offline-indicator" id="offlineIndicator">📴 آپ آف لائن ہیں</div>
+
+<!-- ========== HEADER ========== -->
+<div class="fixed-header">
+  <div class="header-top">
+    <div class="header-placeholder"></div>
+    <div class="surah-title">سُوۡرَۃُ یٰسٓ</div>
+    <button class="burger-btn" id="menuBtn">☰</button>
+  </div>
+  <div class="controls-row">
+    <select class="qari-select" id="reciterSelect">
+      <option value="alafasy">مشاری العفاسی</option>
+      <option value="basit">عبد الباسط</option>
+      <option value="husary">الحصری</option>
+    </select>
+    <div class="toggle-wrapper">
+      <span>ترجمہ</span>
+      <label class="switch"><input type="checkbox" id="transToggle" checked><span class="slider"></span></label>
+    </div>
+    <div class="toggle-wrapper">
+      <span>تفسیر</span>
+      <label class="switch"><input type="checkbox" id="tafseerToggle"><span class="slider"></span></label>
+    </div>
+    <button class="play-full-btn" id="playFullBtn"><span>▶</span> سورہ سنیں</button>
+  </div>
+</div>
+
+<!-- ========== SIDE MENU ========== -->
+<div class="menu-overlay" id="menuOverlay"></div>
+<div class="side-menu" id="sideMenu">
+  <div class="menu-header">
+    <h3>☰ مینو</h3>
+    <button class="menu-close" id="menuClose">✕</button>
+  </div>
+  <div class="menu-items">
+    <div class="menu-item" id="darkModeItem">
+      <span class="menu-item-icon">🌙</span>
+      <span class="menu-item-text">ڈارک موڈ</span>
+      <label class="switch menu-item-toggle">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="menu-item" id="bookmarksItem">
+      <span class="menu-item-icon">📑</span>
+      <span class="menu-item-text">بک مارکس</span>
+    </div>
+    <div class="menu-item" id="reminderItem">
+      <span class="menu-item-icon">⏰</span>
+      <span class="menu-item-text">یاد دہانی</span>
+    </div>
+    <div class="menu-item" id="islamicItem">
+      <span class="menu-item-icon">☪</span>
+      <span class="menu-item-text">اسلامی معلومات</span>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MAIN CONTENT ========== -->
+<div class="main-content">
+  <div class="bismillah-container">
+    <div class="bismillah-text">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <div class="bismillah-translation" id="bismillahTrans">شروع اللہ کے نام سے جو بڑا مہربان، نہایت رحم والا ہے</div>
+  </div>
+  <div id="quran-container"></div>
+</div>
+
+<!-- ========== BOTTOM PLAYER ========== -->
+<div id="bottomPlayer">
+  <div class="player-info">
+    <div>
+      <div class="player-title">سورۃ یٰسین</div>
+      <div class="player-subtitle" id="playerSubtitle"></div>
+    </div>
+    <button class="close-player" id="stopFullAudioBtn">⏹</button>
+  </div>
+  <div class="progress-container">
+    <span id="currentTimeDisplay">00:00</span>
+    <input type="range" id="audioProgress" value="0" step="1" min="0" max="100">
+    <span id="durationDisplay">00:00</span>
+  </div>
+</div>
+
+<!-- ========== BOOKMARKS MODAL ========== -->
+<div class="modal-overlay" id="bookmarksModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">📑 بک مارکس</span>
+      <button class="modal-close" id="closeBookmarksModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bookmarks-list" id="bookmarksList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ISLAMIC MODAL ========== -->
+<div class="modal-overlay" id="islamicModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">☪ اسلامی معلومات</span>
+      <button class="modal-close" id="closeIslamicModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">🤲 تلاوت سے پہلے کی دعا</div>
+        <div class="dua-box">
+          <div class="dua-arabic">أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ</div>
+          <div class="dua-urdu">میں شیطان مردود سے اللہ کی پناہ مانگتا ہوں</div>
+        </div>
+        <div class="dua-box">
+          <div class="dua-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <div class="dua-urdu">شروع اللہ کے نام سے جو بڑا مہربان، نہایت رحم والا ہے</div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">🤲 تلاوت کے بعد کی دعا</div>
+        <div class="dua-box">
+          <div class="dua-arabic">صَدَقَ اللَّهُ الْعَظِيمُ</div>
+          <div class="dua-urdu">اللہ عظیم نے سچ فرمایا</div>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">⭐ سورۃ یٰسین کی فضیلت</div>
+        <div class="fazilat-text">
+          <p>📌 رسول اللہ ﷺ نے فرمایا: "ہر چیز کا ایک دل ہوتا ہے اور قرآن کا دل سورۃ یٰسین ہے۔"</p>
+          <p>📌 جس نے اللہ کی رضا کے لیے سورۃ یٰسین پڑھی، اس کے پچھلے گناہ معاف کر دیے جائیں گے۔</p>
+          <p>📌 جو شخص رات کو سورۃ یٰسین پڑھے، وہ بخشا ہوا صبح کرے گا۔</p>
+          <p>📌 اپنے مردوں پر سورۃ یٰسین پڑھا کرو۔</p>
+        </div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">🕐 تلاوت کے بہترین اوقات</div>
+        <ul class="time-list">
+          <li><span>🌅</span> فجر کے بعد - دن کی برکت</li>
+          <li><span>🌙</span> مغرب کے بعد - رزق کی فراوانی</li>
+          <li><span>🌃</span> سونے سے پہلے - حفاظت</li>
+          <li><span>📅</span> جمعہ کی رات - خاص فضیلت</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== REMINDER MODAL ========== -->
+<div class="modal-overlay" id="reminderModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">⏰ روزانہ یاد دہانی</span>
+      <button class="modal-close" id="closeReminderModal">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">🔔 یاد دہانی کا وقت</div>
+        <div class="reminder-setting">
+          <span>وقت:</span>
+          <input type="time" class="reminder-time-input" id="reminderTime" value="06:00">
+        </div>
+        <button class="reminder-btn" id="setReminderBtn">✓ مقرر کریں</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const reciters = {
+  "alafasy": { name: "مشاری العفاسی", verseFolder: "Alafasy_128kbps", fullMp3: "https://server8.mp3quran.net/afs/036.mp3" },
+  "basit": { name: "عبد الباسط", verseFolder: "Abdul_Basit_Murattal_64kbps", fullMp3: "https://server7.mp3quran.net/basit/036.mp3" },
+  "husary": { name: "الحصری", verseFolder: "Husary_128kbps", fullMp3: "https://server13.mp3quran.net/husr/036.mp3" }
+};
+
+const verses = [
+  {id:1, a:"يٰسٓ ۚ", u:"یٰس۔", t:"یٰس حروفِ مقطعات میں سے ہے۔ ان کا حقیقی مطلب اللہ ہی بہتر جانتا ہے۔ بعض علماء کہتے ہیں یہ اللہ کے ناموں میں سے ایک نام ہے۔"},
+  {id:2, a:"وَالْقُرْآنِ الْحَكِيمِ ۙ", u:"حکمت والے قرآن کی قسم۔", t:"اللہ تعالیٰ قرآن کی قسم کھا رہا ہے جو حکمت سے بھرپور ہے، جس میں کوئی شک و شبہ نہیں۔"},
+  {id:3, a:"اِنَّكَ لَمِنَ الْمُرْسَلِيْنَ ۙ", u:"بے شک آپ رسولوں میں سے ہیں۔", t:"یہ آیت نبی کریم ﷺ کی رسالت کی واضح تصدیق ہے اور مشرکین کے انکار کا جواب ہے۔"},
+  {id:4, a:"عَلٰى صِرَاطٍ مُّسْتَقِيْمٍ ؕ", u:"سیدھے راستے پر (قائم ہیں)۔", t:"صراط مستقیم سے مراد اسلام کا سیدھا راستہ ہے جو جنت کی طرف لے جاتا ہے۔"},
+  {id:5, a:"تَنْزِيْلَ الْعَزِيْزِ الرَّحِيْمِ ۙ", u:"(یہ قرآن) زبردست، مہربان کا اتارا ہوا ہے۔", t:"قرآن اللہ کا نازل کردہ ہے جو العزیز (غالب) اور الرحیم (رحم کرنے والا) ہے۔"},
+  {id:6, a:"لِتُنْذِرَ قَوْمًا مَّا اُنْذِرَ اٰبَآؤُهُمْ فَهُمْ غٰفِلُوْنَ ؕ", u:"تاکہ آپ ایسی قوم کو ڈرائیں جن کے باپ دادا نہیں ڈرائے گئے تھے پس وہ غافل ہیں۔", t:"عرب میں لمبے عرصے سے کوئی نبی نہیں آیا تھا اس لیے وہ غفلت میں پڑے ہوئے تھے۔"},
+  {id:7, a:"لَقَدْ حَقَّ الْقَوْلُ عَلٰٓى اَكْثَرِهِمْ فَهُمْ لَا يُؤْمِنُوْنَ ؕ", u:"بے شک ان میں سے اکثر پر بات ثابت ہو چکی ہے پس وہ ایمان نہیں لائیں گے۔", t:"اللہ کو علم تھا کہ ان میں سے اکثر لوگ اپنی ہٹ دھرمی کی وجہ سے ایمان نہیں لائیں گے۔"},
+  {id:8, a:"اِنَّا جَعَلْنَا فِيْٓ اَعْنَاقِهِمْ اَغْلٰلًا فَهِيَ اِلَى الْاَذْقَانِ فَهُمْ مُّقْمَحُوْنَ ؕ", u:"ہم نے ان کی گردنوں میں طوق ڈال دیے ہیں جو ٹھوڑیوں تک ہیں پس وہ سر اٹھائے ہوئے ہیں۔", t:"یہ گمراہی اور تکبر کی تمثیل ہے کہ وہ حق کی طرف دیکھنے سے قاصر ہیں۔"},
+  {id:9, a:"وَجَعَلْنَا مِنْۢ بَيْنِ اَيْدِيْهِمْ سَدًّا وَّمِنْ خَلْفِهِمْ سَدًّا فَاَغْشَيْنٰهُمْ فَهُمْ لَا يُبْصِرُوْنَ ؕ", u:"اور ہم نے ان کے آگے ایک دیوار بنا دی اور ان کے پیچھے ایک دیوار، پھر ہم نے انہیں ڈھانپ دیا پس وہ دیکھ نہیں سکتے۔", t:"ان کے دلوں پر پردے پڑ گئے ہیں جس سے وہ ہدایت کو دیکھنے سے قاصر ہیں۔"},
+  {id:10, a:"وَسَوَآءٌ عَلَيْهِمْ ءَاَنْذَرْتَهُمْ اَمْ لَمْ تُنْذِرْهُمْ لَا يُؤْمِنُوْنَ ؕ", u:"اور ان پر برابر ہے خواہ آپ انہیں ڈرائیں یا نہ ڈرائیں، وہ ایمان نہیں لائیں گے۔", t:"ہٹ دھرم کافروں کو کتنا ہی سمجھاؤ وہ نہیں مانتے کیونکہ انہوں نے اپنے دلوں کو بند کر لیا ہے۔"},
+  {id:11, a:"اِنَّمَا تُنْذِرُ مَنِ اتَّبَعَ الذِّكْرَ وَخَشِيَ الرَّحْمٰنَ بِالْغَيْبِ ۚ فَبَشِّرْهُ بِمَغْفِرَةٍ وَّاَجْرٍ كَرِيْمٍ ؕ", u:"آپ تو صرف اسی کو ڈرا سکتے ہیں جو نصیحت کی پیروی کرے اور بن دیکھے رحمان سے ڈرے، پس اسے مغفرت اور عزت والے اجر کی خوشخبری دے دیں۔", t:"نصیحت انہی کو فائدہ دیتی ہے جو سننے کو تیار ہوں اور اللہ سے ڈریں۔"},
+  {id:12, a:"اِنَّا نَحْنُ نُحْيِ الْمَوْتٰى وَنَكْتُبُ مَا قَدَّمُوْا وَاٰثَارَهُمْ ؕ وَكُلَّ شَيْءٍ اَحْصَيْنٰهُ فِيْٓ اِمَامٍ مُّبِيْنٍ ࣖ", u:"بے شک ہم ہی مردوں کو زندہ کریں گے اور ہم لکھ رہے ہیں جو انہوں نے آگے بھیجا اور جو نشانیاں چھوڑیں، اور ہر چیز کو ہم نے کھلی کتاب میں گن رکھا ہے۔", t:"اللہ مردوں کو قیامت کے دن زندہ کرے گا اور ہر عمل کا حساب ہوگا۔"},
+  {id:13, a:"وَاضْرِبْ لَهُمْ مَّثَلًا اَصْحٰبَ الْقَرْيَةِ ۘ اِذْ جَآءَهَا الْمُرْسَلُوْنَ ۚ", u:"اور ان کے سامنے بستی والوں کی مثال بیان کریں جب ان کے پاس رسول آئے۔", t:"یہ انطاکیہ کے لوگوں کا قصہ ہے جن کے پاس اللہ کے بھیجے ہوئے رسول آئے۔"},
+  {id:14, a:"اِذْ اَرْسَلْنَآ اِلَيْهِمُ اثْنَيْنِ فَكَذَّبُوْهُمَا فَعَزَّزْنَا بِثَالِثٍ فَقَالُوْٓا اِنَّآ اِلَيْكُمْ مُّرْسَلُوْنَ ؕ", u:"جب ہم نے ان کی طرف دو (رسول) بھیجے تو انہوں نے ان دونوں کو جھٹلایا، پھر ہم نے تیسرے سے تقویت دی، پس انہوں نے کہا بے شک ہم تمہاری طرف بھیجے گئے ہیں۔", t:"پہلے دو رسول بھیجے گئے پھر تیسرے سے مدد کی گئی لیکن لوگوں نے نہیں مانا۔"},
+  {id:15, a:"قَالُوْا مَآ اَنْتُمْ اِلَّا بَشَرٌ مِّثْلُنَا ۙ وَمَآ اَنْزَلَ الرَّحْمٰنُ مِنْ شَيْءٍ ۙ اِنْ اَنْتُمْ اِلَّا تَكْذِبُوْنَ ؕ", u:"انہوں نے کہا تم تو ہمارے جیسے انسان ہو اور رحمان نے کچھ نہیں اتارا، تم صرف جھوٹ بولتے ہو۔", t:"کفار کا پرانا بہانہ کہ رسول بھی ہم جیسے انسان ہیں تو ان کی بات کیسے مانیں۔"},
+  {id:16, a:"قَالُوْا رَبُّنَا يَعْلَمُ اِنَّآ اِلَيْكُمْ لَمُرْسَلُوْنَ ۚ", u:"انہوں نے کہا ہمارا رب جانتا ہے کہ بے شک ہم تمہاری طرف ضرور بھیجے گئے ہیں۔", t:"رسولوں نے اللہ کو گواہ بنایا کہ وہ سچے ہیں۔"},
+  {id:17, a:"وَمَا عَلَيْنَآ اِلَّا الْبَلٰغُ الْمُبِيْنُ ؕ", u:"اور ہمارے ذمے صرف کھلا پیغام پہنچانا ہے۔", t:"رسولوں کا کام صرف پیغام پہنچانا ہے، ہدایت دینا اللہ کے ہاتھ میں ہے۔"},
+  {id:18, a:"قَالُوْٓا اِنَّا تَطَيَّرْنَا بِكُمْ ۚ لَىِٕنْ لَّمْ تَنْتَهُوْا لَنَرْجُمَنَّكُمْ وَلَيَمَسَّنَّكُمْ مِّنَّا عَذَابٌ اَلِيْمٌ ؕ", u:"انہوں نے کہا ہم تمہیں منحوس سمجھتے ہیں، اگر تم باز نہ آئے تو ہم تمہیں سنگسار کر دیں گے اور تمہیں ہماری طرف سے دردناک عذاب پہنچے گا۔", t:"کفار نے رسولوں کو منحوس کہا اور دھمکیاں دیں۔"},
+  {id:19, a:"قَالُوْا طَآئِرُكُمْ مَّعَكُمْ ؕ اَىِٕنْ ذُكِّرْتُمْ ؕ بَلْ اَنْتُمْ قَوْمٌ مُّسْرِفُوْنَ ؕ", u:"انہوں نے کہا تمہاری نحوست تمہارے ساتھ ہے، کیا اس لیے کہ تمہیں نصیحت کی گئی؟ بلکہ تم حد سے گزرنے والے لوگ ہو۔", t:"رسولوں نے جواب دیا کہ تمہاری بدقسمتی تمہارے اپنے کفر کی وجہ سے ہے۔"},
+  {id:20, a:"وَجَآءَ مِنْ اَقْصَا الْمَدِيْنَةِ رَجُلٌ يَّسْعٰى ۙ قَالَ يٰقَوْمِ اتَّبِعُوا الْمُرْسَلِيْنَ ۙ", u:"اور شہر کے دور دراز علاقے سے ایک شخص دوڑتا ہوا آیا، کہنے لگا اے میری قوم! رسولوں کی پیروی کرو۔", t:"یہ حبیب نجار تھے جو ایمان لائے اور اپنی قوم کو نصیحت کرنے آئے۔"},
+  {id:21, a:"اتَّبِعُوْا مَنْ لَّا يَسْـَٔلُكُمْ اَجْرًا وَّهُمْ مُّهْتَدُوْنَ ؕ", u:"ان کی پیروی کرو جو تم سے کوئی اجر نہیں مانگتے اور وہ ہدایت یافتہ ہیں۔", t:"سچے داعی بے غرض ہوتے ہیں، اجر نہیں مانگتے۔"},
+  {id:22, a:"وَمَا لِيَ لَآ اَعْبُدُ الَّذِيْ فَطَرَنِيْ وَاِلَيْهِ تُرْجَعُوْنَ ؕ", u:"اور مجھے کیا ہوا کہ میں اس کی عبادت نہ کروں جس نے مجھے پیدا کیا اور تم سب اسی کی طرف لوٹائے جاؤ گے۔", t:"حبیب نجار نے توحید کی سادہ اور واضح دلیل پیش کی۔"},
+  {id:23, a:"ءَاَتَّخِذُ مِنْ دُوْنِهٖٓ اٰلِهَةً اِنْ يُّرِدْنِ الرَّحْمٰنُ بِضُرٍّ لَّا تُغْنِ عَنِّيْ شَفَاعَتُهُمْ شَيْـًٔا وَّلَا يُنْقِذُوْنِ ۚ", u:"کیا میں اس کے سوا معبود بناؤں، اگر رحمان مجھے کوئی تکلیف پہنچانا چاہے تو ان کی سفارش میرے کچھ کام نہ آئے گی اور نہ وہ مجھے بچا سکیں گے۔", t:"بتوں کی بے بسی بیان کی کہ وہ نہ نفع دے سکتے ہیں نہ نقصان سے بچا سکتے ہیں۔"},
+  {id:24, a:"اِنِّيْٓ اِذًا لَّفِيْ ضَلٰلٍ مُّبِيْنٍ ؕ", u:"تب تو میں کھلی گمراہی میں ہوں گا۔", t:"شرک کرنا صریح اور واضح گمراہی ہے۔"},
+  {id:25, a:"اِنِّيْٓ اٰمَنْتُ بِرَبِّكُمْ فَاسْمَعُوْنِ ࣖ", u:"بے شک میں تمہارے رب پر ایمان لایا پس (یہ بات) سن لو۔", t:"حبیب نجار نے کھلے عام ایمان کا اعلان کیا۔"},
+  {id:26, a:"قِيْلَ ادْخُلِ الْجَنَّةَ ؕ قَالَ يٰلَيْتَ قَوْمِيْ يَعْلَمُوْنَ ۙ", u:"(اسے) کہا گیا جنت میں داخل ہو جا۔ اس نے کہا کاش میری قوم جان لیتی۔", t:"شہادت کے بعد فوراً جنت کی بشارت ملی، پھر بھی قوم کی فکر تھی۔"},
+  {id:27, a:"بِمَا غَفَرَ لِيْ رَبِّيْ وَجَعَلَنِيْ مِنَ الْمُكْرَمِيْنَ ؕ", u:"کہ میرے رب نے مجھے بخش دیا اور مجھے عزت والوں میں سے بنا دیا۔", t:"جنت میں بھی اس نیک بندے کو قوم کی فکر تھی کہ وہ بھی ایمان لے آتے۔"},
+  {id:28, a:"وَمَآ اَنْزَلْنَا عَلٰى قَوْمِهٖ مِنْۢ بَعْدِهٖ مِنْ جُنْدٍ مِّنَ السَّمَآءِ وَمَا كُنَّا مُنْزِلِيْنَ ؕ", u:"اور ہم نے اس کے بعد اس کی قوم پر آسمان سے کوئی لشکر نہیں اتارا اور نہ ہم اتارنے والے تھے۔", t:"اللہ نے انہیں ہلاک کرنے کے لیے کوئی لشکر نہیں بھیجا، ایک چیخ کافی تھی۔"},
+  {id:29, a:"اِنْ كَانَتْ اِلَّا صَيْحَةً وَّاحِدَةً فَاِذَا هُمْ خٰمِدُوْنَ ؕ", u:"وہ تو صرف ایک چیخ تھی پھر وہ بجھ کر رہ گئے۔", t:"جبرائیل علیہ السلام کی ایک چیخ سے پوری قوم ہلاک ہو گئی۔"},
+  {id:30, a:"يٰحَسْرَةً عَلَى الْعِبَادِ ۚ مَا يَاْتِيْهِمْ مِّنْ رَّسُوْلٍ اِلَّا كَانُوْا بِهٖ يَسْتَهْزِءُوْنَ ؕ", u:"افسوس ہے بندوں پر، ان کے پاس کوئی رسول نہیں آیا مگر وہ اس کا مذاق اڑاتے تھے۔", t:"ہر دور میں لوگ رسولوں کا مذاق اڑاتے رہے جو بڑے افسوس کی بات ہے۔"},
+  {id:31, a:"اَلَمْ يَرَوْا كَمْ اَهْلَكْنَا قَبْلَهُمْ مِّنَ الْقُرُوْنِ اَنَّهُمْ اِلَيْهِمْ لَا يَرْجِعُوْنَ ؕ", u:"کیا انہوں نے نہیں دیکھا کہ ہم نے ان سے پہلے کتنی امتوں کو ہلاک کیا، وہ ان کی طرف نہیں لوٹیں گی۔", t:"پچھلی قوموں کی تباہی سے عبرت حاصل کرنی چاہیے۔"},
+  {id:32, a:"وَاِنْ كُلٌّ لَّمَّا جَمِيْعٌ لَّدَيْنَا مُحْضَرُوْنَ ࣖ", u:"اور یقیناً سب کے سب ہمارے سامنے حاضر کیے جائیں گے۔", t:"قیامت کے دن تمام انسان اللہ کے سامنے حساب کے لیے حاضر ہوں گے۔"},
+  {id:33, a:"وَاٰيَةٌ لَّهُمُ الْاَرْضُ الْمَيْتَةُ ۖۚ اَحْيَيْنٰهَا وَاَخْرَجْنَا مِنْهَا حَبًّا فَمِنْهُ يَاْكُلُوْنَ ؕ", u:"اور ان کے لیے ایک نشانی مردہ زمین ہے جسے ہم نے زندہ کیا اور اس سے اناج نکالا پس وہ اسے کھاتے ہیں۔", t:"بارش سے مردہ زمین کا زندہ ہونا قیامت کے دن دوبارہ زندہ ہونے کی واضح دلیل ہے۔"},
+  {id:34, a:"وَجَعَلْنَا فِيْهَا جَنّٰتٍ مِّنْ نَّخِيْلٍ وَّاَعْنَابٍ وَّفَجَّرْنَا فِيْهَا مِنَ الْعُيُوْنِ ۙ", u:"اور ہم نے اس میں کھجوروں اور انگوروں کے باغات بنائے اور اس میں چشمے جاری کیے۔", t:"اللہ کی بے شمار نعمتیں ہیں جو زمین سے نکلتی ہیں۔"},
+  {id:35, a:"لِيَاْكُلُوْا مِنْ ثَمَرِهٖ ۙ وَمَا عَمِلَتْهُ اَيْدِيْهِمْ ؕ اَفَلَا يَشْكُرُوْنَ ؕ", u:"تاکہ اس کے پھل کھائیں اور یہ ان کے ہاتھوں کا بنایا ہوا نہیں، تو کیا وہ شکر نہیں کرتے۔", t:"یہ سب اللہ کی عطا ہے، اس کا شکر ادا کرنا چاہیے۔"},
+  {id:36, a:"سُبْحٰنَ الَّذِيْ خَلَقَ الْاَزْوَاجَ كُلَّهَا مِمَّا تُنْۢبِتُ الْاَرْضُ وَمِنْ اَنْفُسِهِمْ وَمِمَّا لَا يَعْلَمُوْنَ ؕ", u:"پاک ہے وہ ذات جس نے تمام جوڑے پیدا کیے، زمین کی اگائی ہوئی چیزوں سے اور خود ان سے اور ان چیزوں سے جو یہ نہیں جانتے۔", t:"ہر چیز میں نر اور مادہ کے جوڑے ہیں، یہ اللہ کی قدرت کی نشانی ہے۔"},
+  {id:37, a:"وَاٰيَةٌ لَّهُمُ الَّيْلُ ۖۚ نَسْلَخُ مِنْهُ النَّهَارَ فَاِذَا هُمْ مُّظْلِمُوْنَ ۙ", u:"اور ان کے لیے ایک نشانی رات ہے، ہم اس سے دن کو الگ کر دیتے ہیں تو وہ اندھیرے میں رہ جاتے ہیں۔", t:"رات اور دن کا بدلنا اللہ کی قدرت کی واضح نشانی ہے۔"},
+  {id:38, a:"وَالشَّمْسُ تَجْرِيْ لِمُسْتَقَرٍّ لَّهَا ؕ ذٰلِكَ تَقْدِيْرُ الْعَزِيْزِ الْعَلِيْمِ ؕ", u:"اور سورج اپنے ٹھہراؤ کی جگہ کے لیے چلتا رہتا ہے، یہ زبردست، علم والے کا اندازہ ہے۔", t:"سورج اپنے مقررہ مدار میں چلتا ہے، یہ اللہ کا بنایا ہوا نظام ہے۔"},
+  {id:39, a:"وَالْقَمَرَ قَدَّرْنٰهُ مَنَازِلَ حَتّٰى عَادَ كَالْعُرْجُوْنِ الْقَدِيْمِ ؕ", u:"اور چاند کے لیے ہم نے منزلیں مقرر کیں یہاں تک کہ وہ پرانی ٹیڑھی شاخ کی طرح ہو جاتا ہے۔", t:"چاند کی 28 منزلیں ہیں جن سے گزرتا ہوا وہ پتلا ہو کر پھر نیا ہو جاتا ہے۔"},
+  {id:40, a:"لَا الشَّمْسُ يَنْۢبَغِيْ لَهَآ اَنْ تُدْرِكَ الْقَمَرَ وَلَا الَّيْلُ سَابِقُ النَّهَارِ ؕ وَكُلٌّ فِيْ فَلَكٍ يَّسْبَحُوْنَ ؕ", u:"نہ سورج کے لیے ممکن ہے کہ چاند کو پکڑ لے اور نہ رات دن سے آگے بڑھ سکتی ہے، اور سب اپنے اپنے مدار میں تیر رہے ہیں۔", t:"اللہ نے ہر چیز کے لیے قوانین مقرر کیے ہیں جن کی خلاف ورزی ممکن نہیں۔"},
+  {id:41, a:"وَاٰيَةٌ لَّهُمْ اَنَّا حَمَلْنَا ذُرِّيَّتَهُمْ فِي الْفُلْكِ الْمَشْحُوْنِ ۙ", u:"اور ان کے لیے ایک نشانی یہ ہے کہ ہم نے ان کی نسل کو بھری ہوئی کشتی میں سوار کیا۔", t:"نوح علیہ السلام کی کشتی جس میں انسانوں کی نسل بچائی گئی۔"},
+  {id:42, a:"وَخَلَقْنَا لَهُمْ مِّنْ مِّثْلِهٖ مَا يَرْكَبُوْنَ ؕ", u:"اور ہم نے ان کے لیے اسی طرح کی اور سواریاں پیدا کیں جن پر وہ سوار ہوتے ہیں۔", t:"جہاز، کشتیاں اور دیگر سواریاں بھی اللہ کی دی ہوئی نعمتیں ہیں۔"},
+  {id:43, a:"وَاِنْ نَّشَاْ نُغْرِقْهُمْ فَلَا صَرِيْخَ لَهُمْ وَلَا هُمْ يُنْقَذُوْنَ ۙ", u:"اور اگر ہم چاہیں تو انہیں غرق کر دیں پھر نہ ان کا کوئی فریاد رسی کرنے والا ہو اور نہ وہ بچائے جائیں۔", t:"اللہ کی قدرت ہے کہ جب چاہے غرق کر دے، کوئی بچانے والا نہیں۔"},
+  {id:44, a:"اِلَّا رَحْمَةً مِّنَّا وَمَتَاعًا اِلٰى حِيْنٍ ؕ", u:"مگر ہماری طرف سے رحمت اور ایک وقت تک فائدہ اٹھانا۔", t:"اللہ کی رحمت ہے کہ لوگوں کو مہلت دیتا ہے۔"},
+  {id:45, a:"وَاِذَا قِيْلَ لَهُمُ اتَّقُوْا مَا بَيْنَ اَيْدِيْكُمْ وَمَا خَلْفَكُمْ لَعَلَّكُمْ تُرْحَمُوْنَ ؕ", u:"اور جب ان سے کہا جاتا ہے کہ اپنے آگے اور پیچھے کی چیزوں سے ڈرو تاکہ تم پر رحم کیا جائے۔", t:"نصیحت کی جاتی ہے کہ گزشتہ قوموں کے عذاب اور آخرت کے عذاب سے ڈرو۔"},
+  {id:46, a:"وَمَا تَاْتِيْهِمْ مِّنْ اٰيَةٍ مِّنْ اٰيٰتِ رَبِّهِمْ اِلَّا كَانُوْا عَنْهَا مُعْرِضِيْنَ ؕ", u:"اور ان کے پاس ان کے رب کی نشانیوں میں سے جو بھی نشانی آتی ہے وہ اس سے منہ موڑ لیتے ہیں۔", t:"منکرین ہر نشانی سے اعراض کرتے ہیں چاہے کتنی واضح ہو۔"},
+  {id:47, a:"وَاِذَا قِيْلَ لَهُمْ اَنْفِقُوْا مِمَّا رَزَقَكُمُ اللّٰهُ ۙ قَالَ الَّذِيْنَ كَفَرُوْا لِلَّذِيْنَ اٰمَنُوْٓا اَنُطْعِمُ مَنْ لَّوْ يَشَآءُ اللّٰهُ اَطْعَمَهٗٓ ۖ اِنْ اَنْتُمْ اِلَّا فِيْ ضَلٰلٍ مُّبِيْنٍ ؕ", u:"اور جب ان سے کہا جاتا ہے کہ اللہ نے جو تمہیں دیا ہے اس میں سے خرچ کرو تو کافر ایمان والوں سے کہتے ہیں کیا ہم اسے کھلائیں جسے اللہ چاہتا تو خود کھلاتا، تم تو صریح گمراہی میں ہو۔", t:"کفار غریبوں کو کھلانے سے انکار کرتے ہیں اور بہانے بناتے ہیں۔"},
+  {id:48, a:"وَيَقُوْلُوْنَ مَتٰى هٰذَا الْوَعْدُ اِنْ كُنْتُمْ صٰدِقِيْنَ ؕ", u:"اور کہتے ہیں یہ وعدہ کب پورا ہوگا اگر تم سچے ہو۔", t:"کفار قیامت کا مذاق اڑاتے ہیں اور پوچھتے ہیں کب آئے گی۔"},
+  {id:49, a:"مَا يَنْظُرُوْنَ اِلَّا صَيْحَةً وَّاحِدَةً تَاْخُذُهُمْ وَهُمْ يَخِصِّمُوْنَ ؕ", u:"وہ صرف ایک چیخ کے منتظر ہیں جو انہیں آ لے گی اور وہ آپس میں جھگڑ رہے ہوں گے۔", t:"قیامت اچانک آئے گی جب لوگ اپنے معمول کے کاموں میں مصروف ہوں گے۔"},
+  {id:50, a:"فَلَا يَسْتَطِيْعُوْنَ تَوْصِيَةً وَّلَآ اِلٰٓى اَهْلِهِمْ يَرْجِعُوْنَ ࣖ", u:"پس نہ وہ وصیت کر سکیں گے اور نہ اپنے گھر والوں کی طرف لوٹ سکیں گے۔", t:"اتنی جلدی سب کچھ ہو جائے گا کہ وصیت کا بھی موقع نہیں ملے گا۔"},
+  {id:51, a:"وَنُفِخَ فِي الصُّوْرِ فَاِذَا هُمْ مِّنَ الْاَجْدَاثِ اِلٰى رَبِّهِمْ يَنْسِلُوْنَ ؕ", u:"اور صور پھونکا جائے گا تو وہ قبروں سے اپنے رب کی طرف دوڑ پڑیں گے۔", t:"دوسری بار صور پھونکنے پر سب لوگ قبروں سے اٹھ کر اللہ کے سامنے حاضر ہوں گے۔"},
+  {id:52, a:"قَالُوْا يٰوَيْلَنَا مَنْۢ بَعَثَنَا مِنْ مَّرْقَدِنَا ٰۜۗ هٰذَا مَا وَعَدَ الرَّحْمٰنُ وَصَدَقَ الْمُرْسَلُوْنَ ؕ", u:"کہیں گے ہائے ہماری خرابی! ہمیں ہماری آرام گاہ سے کس نے اٹھایا؟ یہ وہی ہے جس کا رحمان نے وعدہ کیا تھا اور رسولوں نے سچ کہا تھا۔", t:"کافر قیامت کو دیکھ کر حیران ہوں گے اور مان لیں گے کہ رسول سچے تھے۔"},
+  {id:53, a:"اِنْ كَانَتْ اِلَّا صَيْحَةً وَّاحِدَةً فَاِذَا هُمْ جَمِيْعٌ لَّدَيْنَا مُحْضَرُوْنَ ؕ", u:"وہ صرف ایک چیخ ہوگی پھر سب کے سب ہمارے سامنے حاضر ہوں گے۔", t:"ایک آواز میں تمام مخلوق اللہ کے سامنے جمع ہو جائے گی۔"},
+  {id:54, a:"فَالْيَوْمَ لَا تُظْلَمُ نَفْسٌ شَيْـًٔا وَّلَا تُجْزَوْنَ اِلَّا مَا كُنْتُمْ تَعْمَلُوْنَ ؕ", u:"پس آج کسی جان پر ذرا ظلم نہیں کیا جائے گا اور تمہیں صرف وہی بدلہ ملے گا جو تم کرتے تھے۔", t:"قیامت کے دن کامل انصاف ہوگا، کسی پر ظلم نہیں ہوگا۔"},
+  {id:55, a:"اِنَّ اَصْحٰبَ الْجَنَّةِ الْيَوْمَ فِيْ شُغُلٍ فٰكِهُوْنَ ۚ", u:"بے شک جنت والے آج (لذت کے) کاموں میں مگن ہیں۔", t:"جنت والے نعمتوں میں خوش و خرم ہوں گے۔"},
+  {id:56, a:"هُمْ وَاَزْوَاجُهُمْ فِيْ ظِلٰلٍ عَلَى الْاَرَآىِٕكِ مُتَّكِـُٔوْنَ ؕ", u:"وہ اور ان کی بیویاں سایوں میں مسندوں پر تکیے لگائے بیٹھے ہیں۔", t:"جنت میں آرام اور سکون کی زندگی ہوگی۔"},
+  {id:57, a:"لَهُمْ فِيْهَا فَاكِهَةٌ وَّلَهُمْ مَّا يَدَّعُوْنَ ۚ", u:"ان کے لیے وہاں میوے ہیں اور ان کے لیے وہ سب کچھ ہے جو وہ چاہیں۔", t:"جنت میں ہر مطلوب چیز ملے گی۔"},
+  {id:58, a:"سَلٰمٌ ۖۚ قَوْلًا مِّنْ رَّبٍّ رَّحِيْمٍ ؕ", u:"سلام ہے، مہربان رب کی طرف سے فرمان۔", t:"اللہ تعالیٰ خود جنت والوں کو سلام کہے گا، یہ سب سے بڑا اعزاز ہے۔"},
+  {id:59, a:"وَامْتَازُوا الْيَوْمَ اَيُّهَا الْمُجْرِمُوْنَ ؕ", u:"اور اے مجرمو! آج الگ ہو جاؤ۔", t:"مجرموں کو نیک لوگوں سے الگ کر دیا جائے گا۔"},
+  {id:60, a:"اَلَمْ اَعْهَدْ اِلَيْكُمْ يٰبَنِيْٓ اٰدَمَ اَنْ لَّا تَعْبُدُوا الشَّيْطٰنَ ۚ اِنَّهٗ لَكُمْ عَدُوٌّ مُّبِيْنٌ ۙ", u:"اے بنی آدم! کیا میں نے تمہیں حکم نہیں دیا تھا کہ شیطان کی عبادت نہ کرو، بے شک وہ تمہارا کھلا دشمن ہے۔", t:"اللہ نے شیطان سے بچنے کا عہد لیا تھا لیکن لوگوں نے شیطان کی پیروی کی۔"},
+  {id:61, a:"وَّاَنِ اعْبُدُوْنِيْ ؕ هٰذَا صِرَاطٌ مُّسْتَقِيْمٌ ؕ", u:"اور میری عبادت کرو، یہی سیدھا راستہ ہے۔", t:"اللہ کی عبادت ہی صراط مستقیم ہے۔"},
+  {id:62, a:"وَلَقَدْ اَضَلَّ مِنْكُمْ جِبِلًّا كَثِيْرًا ؕ اَفَلَمْ تَكُوْنُوْا تَعْقِلُوْنَ ؕ", u:"اور یقیناً اس نے تم میں سے بہت سی مخلوق کو گمراہ کیا، تو کیا تم سمجھتے نہیں تھے۔", t:"شیطان نے بہت سے لوگوں کو گمراہ کیا حالانکہ عقل استعمال کرنی چاہیے تھی۔"},
+  {id:63, a:"هٰذِهٖ جَهَنَّمُ الَّتِيْ كُنْتُمْ تُوْعَدُوْنَ ؕ", u:"یہی وہ جہنم ہے جس کا تم سے وعدہ کیا جاتا تھا۔", t:"جہنم کا وعدہ سچا ثابت ہوا۔"},
+  {id:64, a:"اِصْلَوْهَا الْيَوْمَ بِمَا كُنْتُمْ تَكْفُرُوْنَ ؕ", u:"آج اس میں داخل ہو جاؤ اس کفر کے بدلے جو تم کرتے تھے۔", t:"کفر کی سزا جہنم کی آگ ہے۔"},
+  {id:65, a:"اَلْيَوْمَ نَخْتِمُ عَلٰٓى اَفْوَاهِهِمْ وَتُكَلِّمُنَآ اَيْدِيْهِمْ وَتَشْهَدُ اَرْجُلُهُمْ بِمَا كَانُوْا يَكْسِبُوْنَ ؕ", u:"آج ہم ان کے منہ پر مہر لگا دیں گے اور ان کے ہاتھ ہم سے بات کریں گے اور ان کے پاؤں گواہی دیں گے جو وہ کماتے تھے۔", t:"قیامت کے دن جسم کے اعضاء گواہی دیں گے۔"},
+  {id:66, a:"وَلَوْ نَشَآءُ لَطَمَسْنَا عَلٰٓى اَعْيُنِهِمْ فَاسْتَبَقُوا الصِّرَاطَ فَاَنّٰى يُبْصِرُوْنَ ؕ", u:"اور اگر ہم چاہیں تو ان کی آنکھوں کو مٹا دیں پھر وہ راستہ ڈھونڈنے دوڑیں تو کیسے دیکھیں۔", t:"اللہ کی قدرت ہے کہ جب چاہے بینائی چھین لے۔"},
+  {id:67, a:"وَلَوْ نَشَآءُ لَمَسَخْنٰهُمْ عَلٰى مَكَانَتِهِمْ فَمَا اسْتَطَاعُوْا مُضِيًّا وَّلَا يَرْجِعُوْنَ ؕ", u:"اور اگر ہم چاہیں تو انہیں ان کی جگہ پر مسخ کر دیں پھر نہ آگے جا سکیں نہ پیچھے لوٹ سکیں۔", t:"اللہ شکلیں بگاڑ سکتا ہے اور بے بس کر سکتا ہے۔"},
+  {id:68, a:"وَمَنْ نُّعَمِّرْهُ نُنَكِّسْهُ فِي الْخَلْقِ ؕ اَفَلَا يَعْقِلُوْنَ ؕ", u:"اور جسے ہم لمبی عمر دیتے ہیں اسے پیدائش میں الٹا کر دیتے ہیں، تو کیا وہ سمجھتے نہیں۔", t:"بڑھاپے میں انسان پھر بچوں جیسا کمزور ہو جاتا ہے۔"},
+  {id:69, a:"وَمَا عَلَّمْنٰهُ الشِّعْرَ وَمَا يَنْۢبَغِيْ لَهٗ ؕ اِنْ هُوَ اِلَّا ذِكْرٌ وَّقُرْاٰنٌ مُّبِيْنٌ ۙ", u:"اور ہم نے اسے شعر نہیں سکھایا اور نہ یہ اس کے لائق ہے، یہ تو صرف نصیحت اور واضح قرآن ہے۔", t:"قرآن شاعری نہیں بلکہ اللہ کا کلام اور ہدایت ہے۔"},
+  {id:70, a:"لِّيُنْذِرَ مَنْ كَانَ حَيًّا وَّيَحِقَّ الْقَوْلُ عَلَى الْكٰفِرِيْنَ ؕ", u:"تاکہ ڈرائے اسے جو زندہ ہو اور کافروں پر بات ثابت ہو جائے۔", t:"قرآن زندہ دلوں کے لیے ہے جو سننے کو تیار ہوں۔"},
+  {id:71, a:"اَوَلَمْ يَرَوْا اَنَّا خَلَقْنَا لَهُمْ مِّمَّا عَمِلَتْ اَيْدِيْنَآ اَنْعَامًا فَهُمْ لَهَا مٰلِكُوْنَ ؕ", u:"کیا انہوں نے نہیں دیکھا کہ ہم نے اپنے ہاتھوں سے بنائی ہوئی چیزوں میں سے ان کے لیے چوپائے بنائے پس وہ ان کے مالک ہیں۔", t:"مویشی اللہ کی بڑی نعمت ہیں جو انسان کے فائدے کے لیے بنائے گئے۔"},
+  {id:72, a:"وَذَلَّلْنٰهَا لَهُمْ فَمِنْهَا رَكُوْبُهُمْ وَمِنْهَا يَاْكُلُوْنَ ؕ", u:"اور ہم نے انہیں ان کے لیے تابع کر دیا، پس کچھ ان کی سواری ہیں اور کچھ کو وہ کھاتے ہیں۔", t:"جانور انسان کے قابو میں کر دیے گئے ہیں۔"},
+  {id:73, a:"وَلَهُمْ فِيْهَا مَنَافِعُ وَمَشَارِبُ ؕ اَفَلَا يَشْكُرُوْنَ ؕ", u:"اور ان کے لیے ان میں فائدے اور پینے کی چیزیں ہیں، تو کیا وہ شکر نہیں کرتے۔", t:"اتنی نعمتوں کے باوجود لوگ شکر نہیں کرتے۔"},
+  {id:74, a:"وَاتَّخَذُوْا مِنْ دُوْنِ اللّٰهِ اٰلِهَةً لَّعَلَّهُمْ يُنْصَرُوْنَ ؕ", u:"اور انہوں نے اللہ کے سوا معبود بنا لیے کہ شاید ان کی مدد کی جائے۔", t:"ناشکری کی انتہا کہ اللہ کی نعمتیں کھا کر غیر اللہ کی پوجا کرتے ہیں۔"},
+  {id:75, a:"لَا يَسْتَطِيْعُوْنَ نَصْرَهُمْ ۙ وَهُمْ لَهُمْ جُنْدٌ مُّحْضَرُوْنَ ؕ", u:"وہ ان کی مدد نہیں کر سکتے اور وہ (معبود) ان کے لیے حاضر کیا گیا لشکر ہیں۔", t:"بت بے بس ہیں، نہ اپنی مدد کر سکتے ہیں نہ دوسروں کی۔"},
+  {id:76, a:"فَلَا يَحْزُنْكَ قَوْلُهُمْ ۘ اِنَّا نَعْلَمُ مَا يُسِرُّوْنَ وَمَا يُعْلِنُوْنَ ؕ", u:"پس آپ کو ان کی بات غمگین نہ کرے، بے شک ہم جانتے ہیں جو وہ چھپاتے ہیں اور جو ظاہر کرتے ہیں۔", t:"نبی کریم ﷺ کو تسلی دی جا رہی ہے کہ کفار کی باتوں سے پریشان نہ ہوں۔"},
+  {id:77, a:"اَوَلَمْ يَرَ الْاِنْسَانُ اَنَّا خَلَقْنٰهُ مِنْ نُّطْفَةٍ فَاِذَا هُوَ خَصِيْمٌ مُّبِيْنٌ ؕ", u:"کیا انسان نے نہیں دیکھا کہ ہم نے اسے نطفے سے پیدا کیا پھر وہ کھلا جھگڑالو بن گیا۔", t:"انسان اپنی حقیر پیدائش بھول کر اللہ سے جھگڑتا ہے۔"},
+  {id:78, a:"وَضَرَبَ لَنَا مَثَلًا وَّنَسِيَ خَلْقَهٗ ؕ قَالَ مَنْ يُّحْيِ الْعِظَامَ وَهِيَ رَمِيْمٌ ؕ", u:"اور اس نے ہمارے لیے مثال بیان کی اور اپنی پیدائش بھول گیا، کہنے لگا کون ہڈیوں کو زندہ کرے گا جب وہ بوسیدہ ہو جائیں۔", t:"عاص بن وائل نے بوسیدہ ہڈی دکھا کر قیامت کا انکار کیا تھا۔"},
+  {id:79, a:"قُلْ يُحْيِيْهَا الَّذِيْٓ اَنْشَاَهَآ اَوَّلَ مَرَّةٍ ؕ وَهُوَ بِكُلِّ خَلْقٍ عَلِيْمٌ ۙ", u:"کہہ دیجیے انہیں وہی زندہ کرے گا جس نے انہیں پہلی بار پیدا کیا اور وہ ہر مخلوق کو جاننے والا ہے۔", t:"جو پہلی بار پیدا کر سکتا ہے وہ دوبارہ پیدا کرنے پر بھی قادر ہے۔"},
+  {id:80, a:"الَّذِيْ جَعَلَ لَكُمْ مِّنَ الشَّجَرِ الْاَخْضَرِ نَارًا فَاِذَآ اَنْتُمْ مِّنْهُ تُوْقِدُوْنَ ؕ", u:"جس نے تمہارے لیے سبز درخت سے آگ بنائی پس تم اس سے آگ سلگاتے ہو۔", t:"سبز درخت سے آگ نکالنا اللہ کی قدرت کی دلیل ہے۔"},
+  {id:81, a:"اَوَلَيْسَ الَّذِيْ خَلَقَ السَّمٰوٰتِ وَالْاَرْضَ بِقٰدِرٍ عَلٰٓى اَنْ يَّخْلُقَ مِثْلَهُمْ ؕ بَلٰى ۚ وَهُوَ الْخَلّٰقُ الْعَلِيْمُ ؕ", u:"کیا جس نے آسمانوں اور زمین کو پیدا کیا وہ اس بات پر قادر نہیں کہ ان جیسے پیدا کر دے؟ کیوں نہیں! وہ تو بڑا پیدا کرنے والا، جاننے والا ہے۔", t:"جو اتنی بڑی کائنات بنا سکتا ہے وہ انسانوں کو دوبارہ پیدا کرنے پر ضرور قادر ہے۔"},
+  {id:82, a:"اِنَّمَآ اَمْرُهٗٓ اِذَآ اَرَادَ شَيْـًٔا اَنْ يَّقُوْلَ لَهٗ كُنْ فَيَكُوْنُ ؕ", u:"اس کا حکم جب وہ کسی چیز کا ارادہ کرے تو یہی ہے کہ اسے کہے ہو جا تو وہ ہو جاتی ہے۔", t:"کن فیکون - اللہ کا ایک حکم اور ہر چیز وجود میں آ جاتی ہے۔"},
+  {id:83, a:"فَسُبْحٰنَ الَّذِيْ بِيَدِهٖ مَلَكُوْتُ كُلِّ شَيْءٍ وَّاِلَيْهِ تُرْجَعُوْنَ ࣖ", u:"پس پاک ہے وہ ذات جس کے ہاتھ میں ہر چیز کی بادشاہت ہے اور تم اسی کی طرف لوٹائے جاؤ گے۔", t:"سورت کا اختتام اللہ کی تسبیح اور اس کی طرف لوٹنے کے ذکر سے ہوا۔"}
+];
+
+const $ = id => document.getElementById(id);
+const container = $('quran-container');
+const toast = $('toast');
+
+let currentAudio = null, currentBtn = null, fullSurahAudio = null;
+let bookmarks = JSON.parse(localStorage.getItem('yasin_bookmarks') || '[]');
+let darkMode = localStorage.getItem('yasin_darkmode') === 'true';
+
+const showToast = msg => { toast.textContent = msg; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); };
+const formatTime = s => isNaN(s) ? "00:00" : `${Math.floor(s/60).toString().padStart(2,'0')}:${Math.floor(s%60).toString().padStart(2,'0')}`;
+const getVerseUrl = (n, f) => `https://www.everyayah.com/data/${f}/036${n.toString().padStart(3,'0')}.mp3`;
+const isBookmarked = id => bookmarks.includes(id);
+
+// ========== MENU FUNCTIONS ==========
+function openMenu() {
+  $('sideMenu').classList.add('show');
+  $('menuOverlay').classList.add('show');
+}
+function closeMenu() {
+  $('sideMenu').classList.remove('show');
+  $('menuOverlay').classList.remove('show');
+}
+
+// ========== DARK MODE ==========
+function applyDarkMode() {
+  document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : '');
+  $('darkModeToggle').checked = darkMode;
+}
+
+// ========== BOOKMARKS ==========
+function toggleBookmark(id) {
+  bookmarks = isBookmarked(id) ? bookmarks.filter(b => b !== id) : [...bookmarks, id];
+  localStorage.setItem('yasin_bookmarks', JSON.stringify(bookmarks));
+  showToast(isBookmarked(id) ? '✅ بک مارک محفوظ' : '❌ بک مارک ہٹایا');
+  render();
+  renderBookmarksList();
+}
+
+function renderBookmarksList() {
+  const list = $('bookmarksList');
+  list.innerHTML = bookmarks.length ? bookmarks.map(id => {
+    const v = verses.find(x => x.id === id);
+    return `<div class="bookmark-item" onclick="scrollToVerse(${id})"><div class="bookmark-item-num">آیت ${id}</div><div class="bookmark-item-text">${v.a.substring(0,40)}...</div></div>`;
+  }).join('') : '<div class="no-bookmarks">کوئی بک مارک نہیں</div>';
+}
+
+window.scrollToVerse = id => { 
+  $(`verse-${id}`).scrollIntoView({behavior:'smooth',block:'center'}); 
+  $('bookmarksModal').classList.remove('show');
+  closeMenu();
+};
+
+// ========== COPY & SHARE ==========
+window.copyVerse = id => { 
+  const v = verses.find(x => x.id === id); 
+  const text = `📖 سورۃ یٰسین - آیت ${id}\n\n${v.a}\n\n📝 ترجمہ:\n${v.u}\n\n📚 تفسیر:\n${v.t}`;
+  navigator.clipboard.writeText(text).then(() => showToast('📋 آیت، ترجمہ اور تفسیر کاپی ہو گئی')); 
+};
+
+window.shareVerse = id => { 
+  const v = verses.find(x => x.id === id); 
+  const text = `📖 سورۃ یٰسین - آیت ${id}\n\n${v.a}\n\n📝 ترجمہ:\n${v.u}\n\n📚 تفسیر:\n${v.t}`;
+  if (navigator.share) {
+    navigator.share({title:'سورۃ یٰسین - آیت ' + id, text});
+  } else {
+    navigator.clipboard.writeText(text).then(() => showToast('📋 کاپی ہو گئی - شیئر کریں'));
+  }
+};
+
+window.toggleBookmark = toggleBookmark;
+
+// ========== RENDER ==========
+function render() {
+  container.innerHTML = verses.map(v => `
+    <div class="verse ${isBookmarked(v.id)?'bookmarked':''}" id="verse-${v.id}">
+      <div class="verse-top">
+        <span class="verse-num">آیت ${v.id}</span>
+        <div class="verse-actions">
+          <button class="action-btn" onclick="copyVerse(${v.id})" title="کاپی">📋</button>
+          <button class="action-btn" onclick="shareVerse(${v.id})" title="شیئر">📤</button>
+          <button class="action-btn ${isBookmarked(v.id)?'bookmarked':''}" onclick="toggleBookmark(${v.id})" title="بک مارک">🔖</button>
+          <button class="action-btn" id="btn-${v.id}" onclick="playVerse(${v.id},this)" title="سنیں">▶</button>
+        </div>
+      </div>
+      <div class="arabic">${v.a}</div>
+      <div class="urdu ${$('transToggle').checked?'':'hidden'}">${v.u}</div>
+      <div class="tafseer ${$('tafseerToggle').checked?'show':''}"><div class="tafseer-label">📖 تفسیر</div><div class="tafseer-text">${v.t}</div></div>
+    </div>
+  `).join('');
+}
+
+// ========== AUDIO ==========
+function stopAllAudio() {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (currentBtn) { currentBtn.innerHTML = '▶'; currentBtn.classList.remove('active'); currentBtn = null; }
+  if (fullSurahAudio) { fullSurahAudio.pause(); fullSurahAudio = null; }
+  $('bottomPlayer').classList.remove('show');
+  $('playFullBtn').innerHTML = '<span>▶</span> سورہ سنیں';
+}
+
+window.playVerse = (n, btn) => {
+  if (currentBtn === btn && currentAudio) { stopAllAudio(); return; }
+  stopAllAudio();
+  currentBtn = btn; btn.innerHTML = '⏸'; btn.classList.add('active');
+  currentAudio = new Audio(getVerseUrl(n, reciters[$('reciterSelect').value].verseFolder));
+  currentAudio.play();
+  currentAudio.onended = stopAllAudio;
+};
+
+function playFullSurah() {
+  const r = reciters[$('reciterSelect').value];
+  if (fullSurahAudio) { 
+    fullSurahAudio.paused ? (fullSurahAudio.play(), $('playFullBtn').innerHTML = '<span>⏸</span> روکیں') : (fullSurahAudio.pause(), $('playFullBtn').innerHTML = '<span>▶</span> سورہ سنیں'); 
+    return; 
+  }
+  stopAllAudio();
+  $('bottomPlayer').classList.add('show');
+  $('playerSubtitle').textContent = r.name;
+  $('playFullBtn').innerHTML = '<span>⏸</span> روکیں';
+  fullSurahAudio = new Audio(r.fullMp3);
+  fullSurahAudio.addEventListener('loadedmetadata', () => { $('audioProgress').max = fullSurahAudio.duration; $('durationDisplay').textContent = formatTime(fullSurahAudio.duration); });
+  fullSurahAudio.addEventListener('timeupdate', () => { $('audioProgress').value = fullSurahAudio.currentTime; $('currentTimeDisplay').textContent = formatTime(fullSurahAudio.currentTime); });
+  fullSurahAudio.addEventListener('ended', stopAllAudio);
+  fullSurahAudio.play();
+}
+
+// ========== EVENT LISTENERS ==========
+$('menuBtn').onclick = openMenu;
+$('menuClose').onclick = closeMenu;
+$('menuOverlay').onclick = closeMenu;
+
+$('darkModeItem').onclick = () => { 
+  darkMode = !darkMode; 
+  localStorage.setItem('yasin_darkmode', darkMode); 
+  applyDarkMode(); 
+  showToast(darkMode ? '🌙 ڈارک موڈ' : '☀️ لائٹ موڈ'); 
+};
+$('darkModeToggle').onchange = () => {
+  darkMode = $('darkModeToggle').checked;
+  localStorage.setItem('yasin_darkmode', darkMode);
+  applyDarkMode();
+  showToast(darkMode ? '🌙 ڈارک موڈ' : '☀️ لائٹ موڈ');
+};
+
+$('bookmarksItem').onclick = () => { closeMenu(); renderBookmarksList(); $('bookmarksModal').classList.add('show'); };
+$('reminderItem').onclick = () => { closeMenu(); $('reminderModal').classList.add('show'); };
+$('islamicItem').onclick = () => { closeMenu(); $('islamicModal').classList.add('show'); };
+
+$('closeBookmarksModal').onclick = () => $('bookmarksModal').classList.remove('show');
+$('closeIslamicModal').onclick = () => $('islamicModal').classList.remove('show');
+$('closeReminderModal').onclick = () => $('reminderModal').classList.remove('show');
+
+$('transToggle').onchange = () => { 
+  $('bismillahTrans').classList.toggle('hidden', !$('transToggle').checked); 
+  document.querySelectorAll('.urdu').forEach(el => el.classList.toggle('hidden', !$('transToggle').checked)); 
+};
+$('tafseerToggle').onchange = () => document.querySelectorAll('.tafseer').forEach(el => el.classList.toggle('show', $('tafseerToggle').checked));
+
+$('playFullBtn').onclick = playFullSurah;
+$('stopFullAudioBtn').onclick = stopAllAudio;
+$('reciterSelect').onchange = stopAllAudio;
+$('audioProgress').oninput = () => { if (fullSurahAudio) fullSurahAudio.currentTime = $('audioProgress').value; };
+
+$('setReminderBtn').onclick = () => { 
+  if ('Notification' in window) {
+    Notification.requestPermission().then(p => { 
+      if(p==='granted') { 
+        localStorage.setItem('yasin_reminder',$('reminderTime').value); 
+        showToast('⏰ یاد دہانی مقرر'); 
+        $('reminderModal').classList.remove('show'); 
+      } else {
+        showToast('❌ نوٹیفکیشن کی اجازت دیں');
+      }
+    }); 
+  }
+};
+
+document.querySelectorAll('.modal-overlay').forEach(o => o.onclick = e => { if(e.target === o) o.classList.remove('show'); });
+window.addEventListener('online', () => $('offlineIndicator').classList.remove('show'));
+window.addEventListener('offline', () => $('offlineIndicator').classList.add('show'));
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  const sw = `const C='surah-yaseen-v3';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['./']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([sw],{type:'application/javascript'}))).catch(()=>{});
+}
+
+applyDarkMode();
+render();
+</script>
+</body>
+</html>
