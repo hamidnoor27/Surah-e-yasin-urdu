@@ -1,6 +1,6 @@
 {
   "appId": "com.surah.yaseen",
   "appName": "Surah Yaseen Urdu",
-  "webDir": "./",
+  "webDir": "www",
   "bundledWebRuntime": false
 }
